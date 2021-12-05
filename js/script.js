@@ -8,7 +8,7 @@ let gameOver = false;
 let gameWon = false;
 
 
-
+let thisIsAChange = "changychange";
 
 let newGame = function (word) {
     solution = [];
