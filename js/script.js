@@ -47,7 +47,7 @@ function chooseRandomWord(jsonData) {
 }
 
 
-let newGame = function (word) {
+function newGame (word) {
     solution = [];
     solutionProgress = [];
     falseLetters = [];
@@ -63,7 +63,7 @@ let newGame = function (word) {
 }
 
 
-const reduceLifesIfNotFound = function (letterFound) {
+function reduceLifesIfNotFound (letterFound) {
     if (letterFound === false) {
         lifes--;
     }
@@ -73,7 +73,7 @@ const reduceLifesIfNotFound = function (letterFound) {
 }
 
 
-const checkIfPlayerHasWon = function () {
+function checkIfPlayerHasWon () {
     let allEqual = true;
     for (let i = 0; i < solution.length; i++) {
         if (solution[i] !== solutionProgress[i]) {
@@ -87,7 +87,7 @@ const checkIfPlayerHasWon = function () {
 }
 
 
-const checkIfLetterIsInSolution = function (letter) {
+function checkIfLetterIsInSolution (letter) {
     let letterFound = false;
     for (let i = 0; i < solution.length; i++) {
         let letterInSolution = solution[i];
@@ -100,7 +100,7 @@ const checkIfLetterIsInSolution = function (letter) {
 }
 
 
-let guessLetter = function (letter) {
+function guessLetter (letter) {
     let letterFound = checkIfLetterIsInSolution(letter.toUpperCase());
     reduceLifesIfNotFound(letterFound);
     checkIfPlayerHasWon();
@@ -112,9 +112,15 @@ let guessLetter = function (letter) {
 }
 
 window.addEventListener("DOMContentLoaded", function () {
+    let startButton = document.querySelector("#nameSubmit");
+    if (startButton) {
+        startButton.addEventListener("click", changeContent);
+    }
+
     let abc = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
     for (let letter of abc) {
         let letterButton = document.createElement("button");
+        letterButton.classList.add("letterButton");
         letterButton.addEventListener("click", clickLetter);
         let letterTag = document.createTextNode(letter);
         letterButton.appendChild(letterTag);
@@ -122,20 +128,21 @@ window.addEventListener("DOMContentLoaded", function () {
         document.querySelector(".letters").appendChild(letterButton);
     }
 
-
     loadJsonData();
+    showHighscore();
 });
 
 function startGame() {
     let randomWord = chooseRandomWord(jsonData);
     newGame(randomWord);
-    runGameLoop();
     updateMaskedSolution();
-}
+    
 
-let startButton = document.querySelector("#nameSubmit");
-if (startButton) {
-    startButton.addEventListener("click", changeContent);
+    document.querySelector("#trysLeft").innerText = "Leben: " + lifes;
+    let letterButtons = document.getElementsByClassName("letterButton");
+    for (let letterButton of letterButtons) {
+        letterButton.disabled = false;
+    }
 }
 
 function updateMaskedSolution() {
@@ -144,26 +151,19 @@ function updateMaskedSolution() {
 }
 
 function changeContent() {
+    if (document.querySelector("#nameBox").value.trim().length == 0) {
+        alert("Ungültiger Name");
+        return;
+    }
+
     let classVisible = document.getElementById("runGame");
     classVisible.classList.remove("gameInvisible");
     let classInvisible = document.getElementById("gameStartVisible");
     classInvisible.classList.add("gameInvisible");
 }
 
-function runGameLoop() {
+function highscore() {
     let playerName = document.querySelector("#nameBox").value;
-    /*while (gameWon === false && gameOver === false) {
-        alert(solutionProgress.toString() + "\n" + falseLetters.toString());
-        let guess = prompt("Rate einen Buchstaben");
-        guessLetter(guess);
-
-        alert("Leben: " + lifes);
-        if (gameOver === true) alert("Verloren :(");
-        if (gameWon === true) alert("GEWONNEN! :)))"); 
-    } */
-
-
-    // In eine Funktion packen!!!!!!!!!!!!!!!!!!!!!!!!!
     let highscoreData = JSON.parse(localStorage.getItem("highscore"));
     let highscoreValue = 0;
 
@@ -178,8 +178,6 @@ function runGameLoop() {
         }));
         highscoreValue = lifes;
     }
-
-    document.querySelector("#playerHighscore").innerHTML = "Aktuell führt " + playerName + " mit " + highscoreValue + " verbliebenen Leben!";
 }
 
 function clickLetter(event) {
@@ -188,6 +186,39 @@ function clickLetter(event) {
     guessLetter(clickedLetter);
     updateMaskedSolution();
     clickedLetterElement.disabled = true;
+
+    document.querySelector("#trysLeft").innerText = "Leben: " + lifes;
+
+    gameEnd();
+}
+
+function gameEnd () {
+    if (gameOver === true || gameWon === true) {
+        let classVisible = document.getElementById("gameStartVisible");
+        classVisible.classList.remove("gameInvisible");
+        let classInvisible = document.getElementById("runGame");
+        classInvisible.classList.add("gameInvisible");        
+    }
+    
+    if (gameOver === true) {
+        document.querySelector("#winOrLooseText").innerHTML = "Du hast leider verloren! :(";
+    }
+    
+    if (gameWon === true) {
+        document.querySelector("#winOrLooseText").innerHTML = "Du hast gewonnen! :)";
+        highscore();
+    };
+
+    showHighscore();
+}
+
+function showHighscore () {
+    let highscoreData = JSON.parse(localStorage.getItem("highscore"));
+    if (highscoreData != null) {
+        let highscoreValue = highscoreData.score;
+        let playerName = highscoreData.name;
+        document.querySelector("#playerHighscore").innerHTML = "Aktuell führt " + playerName + " mit " + highscoreValue + " verbliebenen Leben!";
+    } 
 }
 
 

@@ -4,133 +4,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="css/default.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" />
+
     <title>Hangman</title>
 
     <style>
-
-    html {
-        background: rgb(180, 219, 241);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        font-size: 20px;
-        margin: 0 auto;
-
-    }
-
-    h1 {
-        color: rgb(39, 75, 141);
-        font-size: 72px;
-        margin: 50px;
-        text-align: center;
-        
-    }
-
-    .nameInput {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-
-    #nameBox {
-        width: 200px;
-        height: 10px;
-        display: block;
-        margin: 15px;
-        padding: 10px;
-    }
-
-    #nameSubmit {
-        width: 150px;
-        height: 35px;
-        display: block;
-    }
-
-    .nameQuestion {
-        text-align: center;
-        color: rgb(39, 75, 141);;
-    }
-
-    #playerHighscore {
-        text-align: center;
-        color: rgb(26, 109, 54);
-        font-size: 25px;
-        border: solid 2px green;
-        background: rgb(172, 247, 205);
-        padding: 10px;
-        max-width: 450px;
-        margin: auto;
-        margin-bottom: 50px;        
-    }
-
-    /* Ab hier Event-Container Hangman*/
-
-    .gameInvisible {
-        display: none;
-    }
-
-    #showSolutionProgress {
-        text-align: center;
-        color: rgb(39, 75, 141);
-        margin: 50px;
-        font-size: 26px;
-    }
-
-    #feedback {
-        text-align: center;
-        color: rgb(39, 75, 141);
-    }
-
-    .letters {
-        margin-top: 25px;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    .letterButtons {
-        padding: 10px;
-        border: rgb(39, 75, 141) solid 1px;
-        margin: 10px;
-        width: 20px;
-        background: white;
-        color: rgb(39, 75, 141);
-        border-radius: 15%;
-        text-align: center;
-    }
-
-    .letterButtons:hover {
-        background: rgb(39, 75, 141);
-        color: white;
-        border: white solid 1px;
-    } 
-
-    #trysLeft {
-        font-size: 16px;
-        margin-bottom: 40px;
-    }
-
-
     </style>
+    
 </head>
 <body>
     <h1>Galgenraten</h1>
     <article id="gameStartVisible">
         <p id="playerHighscore">Aktuell gibt es noch keinen Highscore.</p>
+        <p id="winOrLooseText"></p>
         <p class="nameQuestion">Gib deinen Namen ein, um ein Spiel zu starten.</p>
         <div class="nameInput">
-            <input id="nameBox" type="text" placeholder="Dein Name" required>
+            <input id="nameBox" type="text" placeholder="Dein Name">
             <button onclick="startGame()" id="nameSubmit" type="submit">Spiel starten</button>
         </div>
     </article>
-    <article id="runGame" class="gameInvisible">
-        
+    <article id="runGame" class="gameInvisible">  
         <div id="feedback">
             <p id="chooseLetter">Wähle einen Buchstaben aus!</p>
             <div id="showSolutionProgress">
-                <p id="maskedSolution">_ _ _ _ _ _ _ _ _</p>
+                <p id="maskedSolution"></p>
             </div>
-            <!--<p id="wrongLetter">!!!! Der Buchstabe ist nicht im Text enthalten !!!!</p>
-            <p id="rightLetter">!!!! Der Buchstabe ist im Text enthalten !!!!</p>-->
             <p id="trysLeft">Du hast noch XX Versuche übrig</p>
         </div>
         <div id="letters" class="letters"></div>
